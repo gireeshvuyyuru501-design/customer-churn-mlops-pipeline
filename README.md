@@ -13,519 +13,519 @@ Customer churn is a common business problem where organizations need to identify
 This project builds an end-to-end churn prediction pipeline that:
 
 - preprocesses customer data
-- - trains a machine learning model
-  - - tracks experiments using MLflow
-    - - validates model quality using a recall threshold
-      - - promotes the approved model as the champion version
-        - - exports the trained model for production inference
-          - - serves predictions through FastAPI
-            - - containerizes the service using Docker
-              - - orchestrates deployment using Docker Compose
-                - - manages container infrastructure using Terraform
-                  - - validates code and Docker builds using GitHub Actions
-                    - - detects synthetic feature drift
-                     
-                      - ---
-
-                      ## Architecture
-
-                      ```text
-                      Telco Customer Churn Dataset
-                                  ↓
-                            Data Preparation
-                                  ↓
-                            Feature Processing
-                                  ↓
-                          scikit-learn Training
-                                  ↓
-                           MLflow Tracking
-                                  ↓
-                            Model Registry
-                                  ↓
-                            Quality Gate
-                           Recall >= 0.70
-                                  ↓
-                            Champion Model
-                                  ↓
-                             model.joblib
-                                  ↓
-                            FastAPI Inference
-                             /health /predict
-                                  ↓
-                                Docker
-                                  ↓
-                            Docker Compose
-                                  ↓
-                              Terraform
-                                  ↓
-                           GitHub Actions CI
-                                  ↓
-                            Drift Monitoring
-                      ```
-
-                      ---
-
-                      ## Key Results
-
-                      - Raw customer records: 7,043
-                      - - Cleaned records: 7,032
-                        - - Records removed due to missing TotalCharges: 11
-                          - - Churn rate: 26.6%
-                            - - Quality-gate threshold: Recall >= 0.70
-                              - - Achieved recall: 0.7968
-                                - - Champion model: Version 1
-                                  - - Synthetic drift detected: 2 of 20 columns
-                                    - - Drift rate: 10%
-                                      - - FastAPI prediction endpoint successfully containerized with Docker
-                                       
-                                        - ---
-
-                                        ## Features
-
-                                        - Customer churn prediction
-                                        - - Data preprocessing pipeline
-                                          - - MLflow experiment tracking
-                                            - - MLflow model registry
-                                              - - Model quality gate
-                                                - - Champion model promotion
-                                                  - - Model packaging
-                                                    - - FastAPI inference API
-                                                      - - Dockerized model serving
-                                                        - - Docker Compose orchestration
-                                                          - - Terraform infrastructure as code
-                                                            - - GitHub Actions CI pipeline
-                                                              - - Synthetic drift detection
-                                                                - - Automated testing
-                                                                  - - Swagger/OpenAPI documentation
-                                                                   
-                                                                    - ---
-
-                                                                    ## Tech Stack
-
-                                                                    | Category | Technologies |
-                                                                    |---|---|
-                                                                    | Programming | Python |
-                                                                    | Data Processing | pandas |
-                                                                    | Machine Learning | scikit-learn |
-                                                                    | Model Persistence | joblib |
-                                                                    | Experiment Tracking | MLflow |
-                                                                    | Model Registry | MLflow Model Registry |
-                                                                    | Backend API | FastAPI |
-                                                                    | Validation | Pydantic |
-                                                                    | API Server | Uvicorn |
-                                                                    | Containers | Docker |
-                                                                    | Orchestration | Docker Compose |
-                                                                    | Infrastructure as Code | Terraform |
-                                                                    | CI/CD | GitHub Actions |
-                                                                    | Testing | PyTest |
-                                                                    | Monitoring | Synthetic Drift Detection |
-                                                                    | Version Control | Git, GitHub |
+- trains a machine learning model
+- tracks experiments using MLflow
+- validates model quality using a recall threshold
+- promotes the approved model as the champion version
+- exports the trained model for production inference
+- serves predictions through FastAPI
+- containerizes the service using Docker
+- orchestrates deployment using Docker Compose
+- manages container infrastructure using Terraform
+- validates code and Docker builds using GitHub Actions
+- detects synthetic feature drift
+
+- ---
+
+## Architecture
+
+```text
+Telco Customer Churn Dataset
+↓
+Data Preparation
+↓
+Feature Processing
+↓
+scikit-learn Training
+↓
+MLflow Tracking
+↓
+Model Registry
+↓
+Quality Gate
+Recall >= 0.70
+↓
+Champion Model
+↓
+model.joblib
+↓
+FastAPI Inference
+/health /predict
+↓
+Docker
+↓
+Docker Compose
+↓
+Terraform
+↓
+GitHub Actions CI
+↓
+Drift Monitoring
+```
+
+---
+
+## Key Results
+
+- Raw customer records: 7,043
+- Cleaned records: 7,032
+- Records removed due to missing TotalCharges: 11
+- Churn rate: 26.6%
+- Quality-gate threshold: Recall >= 0.70
+- Achieved recall: 0.7968
+- Champion model: Version 1
+- Synthetic drift detected: 2 of 20 columns
+- Drift rate: 10%
+- FastAPI prediction endpoint successfully containerized with Docker
+
+- ---
+
+## Features
+
+- Customer churn prediction
+- Data preprocessing pipeline
+- MLflow experiment tracking
+- MLflow model registry
+- Model quality gate
+- Champion model promotion
+- Model packaging
+- FastAPI inference API
+- Dockerized model serving
+- Docker Compose orchestration
+- Terraform infrastructure as code
+- GitHub Actions CI pipeline
+- Synthetic drift detection
+- Automated testing
+- Swagger/OpenAPI documentation
+
+- ---
+
+## Tech Stack
+
+| Category | Technologies |
+|---|---|
+| Programming | Python |
+| Data Processing | pandas |
+| Machine Learning | scikit-learn |
+| Model Persistence | joblib |
+| Experiment Tracking | MLflow |
+| Model Registry | MLflow Model Registry |
+| Backend API | FastAPI |
+| Validation | Pydantic |
+| API Server | Uvicorn |
+| Containers | Docker |
+| Orchestration | Docker Compose |
+| Infrastructure as Code | Terraform |
+| CI/CD | GitHub Actions |
+| Testing | PyTest |
+| Monitoring | Synthetic Drift Detection |
+| Version Control | Git, GitHub |
 
-                                                                    ---
+---
 
-                                                                    ## Dataset
+## Dataset
 
-                                                                    The project uses the Telco Customer Churn dataset.
+The project uses the Telco Customer Churn dataset.
 
-                                                                    The preprocessing pipeline:
+The preprocessing pipeline:
 
-                                                                    - loads the raw customer data
-                                                                    - - removes rows with missing TotalCharges
-                                                                      - - prepares features for training
-                                                                        - - preserves feature order for production inference
-                                                                          - - outputs the cleaned dataset
-                                                                           
-                                                                            - Processed output:
-                                                                           
-                                                                            - ```text
-                                                                              Rows in: 7043
-                                                                              Rows out: 7032
-                                                                              Churn rate: 26.6%
-                                                                              ```
+- loads the raw customer data
+- removes rows with missing TotalCharges
+- prepares features for training
+- preserves feature order for production inference
+- outputs the cleaned dataset
 
-                                                                              ---
+- Processed output:
 
-                                                                              ## Model Training
+- ```text
+Rows in: 7043
+Rows out: 7032
+Churn rate: 26.6%
+```
 
-                                                                              The training pipeline uses scikit-learn and logs experiments to MLflow.
+---
 
-                                                                              MLflow tracks:
+## Model Training
 
-                                                                              - model parameters
-                                                                              - - evaluation metrics
-                                                                                - - model artifacts
-                                                                                  - - model versions
-                                                                                    - - experiment history
-                                                                                     
-                                                                                      - ---
+The training pipeline uses scikit-learn and logs experiments to MLflow.
 
-                                                                                      ## Model Quality Gate
+MLflow tracks:
 
-                                                                                      A production model should not automatically be promoted without validation.
+- model parameters
+- evaluation metrics
+- model artifacts
+- model versions
+- experiment history
 
-                                                                                      This project implements a quality gate using recall:
+- ---
 
-                                                                                      ```text
-                                                                                      Required recall >= 0.70
-                                                                                      Achieved recall = 0.7968
-                                                                                      ```
+## Model Quality Gate
 
-                                                                                      Result:
+A production model should not automatically be promoted without validation.
 
-                                                                                      ```text
-                                                                                      PASS
-                                                                                      ```
+This project implements a quality gate using recall:
 
-                                                                                      The approved model is registered as the champion model.
+```text
+Required recall >= 0.70
+Achieved recall = 0.7968
+```
 
-                                                                                      ---
+Result:
 
-                                                                                      ## MLflow Model Registry
+```text
+PASS
+```
 
-                                                                                      The trained model is tracked and promoted using MLflow Model Registry.
+The approved model is registered as the champion model.
 
-                                                                                      Champion model:
+---
 
-                                                                                      ```text
-                                                                                      churn-classifier@champion
-                                                                                      ```
+## MLflow Model Registry
 
-                                                                                      The champion model is exported into:
+The trained model is tracked and promoted using MLflow Model Registry.
 
-                                                                                      ```text
-                                                                                      model.joblib
-                                                                                      ```
+Champion model:
 
-                                                                                      for lightweight containerized inference.
+```text
+churn-classifier@champion
+```
 
-                                                                                      ---
+The champion model is exported into:
 
-                                                                                      ## FastAPI Inference API
+```text
+model.joblib
+```
 
-                                                                                      The model is exposed through FastAPI.
+for lightweight containerized inference.
 
-                                                                                      ### Health Endpoint
+---
 
-                                                                                      ```http
-                                                                                      GET /health
-                                                                                      ```
+## FastAPI Inference API
 
-                                                                                      Example response:
+The model is exposed through FastAPI.
 
-                                                                                      ```json
-                                                                                      {
-                                                                                        "status": "healthy",
-                                                                                        "model": "churn-classifier-champion"
-                                                                                      }
-                                                                                      ```
+### Health Endpoint
 
-                                                                                      ---
+```http
+GET /health
+```
 
-                                                                                      ## Prediction Endpoint
+Example response:
 
-                                                                                      ```http
-                                                                                      POST /predict
-                                                                                      ```
+```json
+{
+"status": "healthy",
+"model": "churn-classifier-champion"
+}
+```
 
-                                                                                      Example request:
+---
 
-                                                                                      ```json
-                                                                                      {
-                                                                                        "gender": "Female",
-                                                                                        "SeniorCitizen": 0,
-                                                                                        "Partner": "No",
-                                                                                        "Dependents": "No",
-                                                                                        "tenure": 2,
-                                                                                        "PhoneService": "Yes",
-                                                                                        "MultipleLines": "No",
-                                                                                        "InternetService": "Fiber optic",
-                                                                                        "OnlineSecurity": "No",
-                                                                                        "OnlineBackup": "No",
-                                                                                        "DeviceProtection": "No",
-                                                                                        "TechSupport": "No",
-                                                                                        "StreamingTV": "Yes",
-                                                                                        "StreamingMovies": "Yes",
-                                                                                        "Contract": "Month-to-month",
-                                                                                        "PaperlessBilling": "Yes",
-                                                                                        "PaymentMethod": "Electronic check",
-                                                                                        "MonthlyCharges": 95.5,
-                                                                                        "TotalCharges": 190.5
-                                                                                      }
-                                                                                      ```
+## Prediction Endpoint
 
-                                                                                      Example response:
+```http
+POST /predict
+```
 
-                                                                                      ```json
-                                                                                      {
-                                                                                        "prediction": "Churn",
-                                                                                        "churn_probability": 0.8861,
-                                                                                        "model": "churn-classifier-champion"
-                                                                                      }
-                                                                                      ```
+Example request:
 
-                                                                                      ---
+```json
+{
+"gender": "Female",
+"SeniorCitizen": 0,
+"Partner": "No",
+"Dependents": "No",
+"tenure": 2,
+"PhoneService": "Yes",
+"MultipleLines": "No",
+"InternetService": "Fiber optic",
+"OnlineSecurity": "No",
+"OnlineBackup": "No",
+"DeviceProtection": "No",
+"TechSupport": "No",
+"StreamingTV": "Yes",
+"StreamingMovies": "Yes",
+"Contract": "Month-to-month",
+"PaperlessBilling": "Yes",
+"PaymentMethod": "Electronic check",
+"MonthlyCharges": 95.5,
+"TotalCharges": 190.5
+}
+```
 
-                                                                                      ## Docker
+Example response:
 
-                                                                                      The inference service is packaged using Docker.
+```json
+{
+"prediction": "Churn",
+"churn_probability": 0.8861,
+"model": "churn-classifier-champion"
+}
+```
 
-                                                                                      Build:
+---
 
-                                                                                      ```bash
-                                                                                      docker build -t churn-mlops-api .
-                                                                                      ```
+## Docker
 
-                                                                                      Run:
+The inference service is packaged using Docker.
 
-                                                                                      ```bash
-                                                                                      docker run --rm -p 8000:8000 churn-mlops-api
-                                                                                      ```
+Build:
 
-                                                                                      Open:
+```bash
+docker build -t churn-mlops-api .
+```
 
-                                                                                      ```text
-                                                                                      http://127.0.0.1:8000/docs
-                                                                                      ```
+Run:
 
-                                                                                      ---
+```bash
+docker run --rm -p 8000:8000 churn-mlops-api
+```
 
-                                                                                      ## Docker Compose
+Open:
 
-                                                                                      Run the containerized API using Docker Compose:
+```text
+http://127.0.0.1:8000/docs
+```
 
-                                                                                      ```bash
-                                                                                      docker compose up --build
-                                                                                      ```
+---
 
-                                                                                      Stop:
+## Docker Compose
 
-                                                                                      ```bash
-                                                                                      docker compose down
-                                                                                      ```
+Run the containerized API using Docker Compose:
 
-                                                                                      ---
+```bash
+docker compose up --build
+```
 
-                                                                                      ## Terraform
+Stop:
 
-                                                                                      Terraform manages the local Docker container as infrastructure as code.
+```bash
+docker compose down
+```
 
-                                                                                      Initialize:
+---
 
-                                                                                      ```bash
-                                                                                      terraform -chdir=terraform init
-                                                                                      ```
+## Terraform
 
-                                                                                      Validate:
+Terraform manages the local Docker container as infrastructure as code.
 
-                                                                                      ```bash
-                                                                                      terraform -chdir=terraform validate
-                                                                                      ```
+Initialize:
 
-                                                                                      Plan:
+```bash
+terraform -chdir=terraform init
+```
 
-                                                                                      ```bash
-                                                                                      terraform -chdir=terraform plan
-                                                                                      ```
+Validate:
 
-                                                                                      Apply:
+```bash
+terraform -chdir=terraform validate
+```
 
-                                                                                      ```bash
-                                                                                      terraform -chdir=terraform apply -auto-approve
-                                                                                      ```
+Plan:
 
-                                                                                      Destroy:
+```bash
+terraform -chdir=terraform plan
+```
 
-                                                                                      ```bash
-                                                                                      terraform -chdir=terraform destroy -auto-approve
-                                                                                      ```
+Apply:
 
-                                                                                      ---
+```bash
+terraform -chdir=terraform apply -auto-approve
+```
 
-                                                                                      ## GitHub Actions CI
+Destroy:
 
-                                                                                      The GitHub Actions workflow automatically performs:
+```bash
+terraform -chdir=terraform destroy -auto-approve
+```
 
-                                                                                      ```text
-                                                                                      Git Push
-                                                                                          ↓
-                                                                                      Checkout
-                                                                                          ↓
-                                                                                      Python 3.11 Setup
-                                                                                          ↓
-                                                                                      Dependency Installation
-                                                                                          ↓
-                                                                                      PyTest
-                                                                                          ↓
-                                                                                      Docker Image Build
-                                                                                      ```
+---
 
-                                                                                      Workflow:
+## GitHub Actions CI
 
-                                                                                      ```text
-                                                                                      .github/workflows/ci.yml
-                                                                                      ```
+The GitHub Actions workflow automatically performs:
 
-                                                                                      ---
+```text
+Git Push
+↓
+Checkout
+↓
+Python 3.11 Setup
+↓
+Dependency Installation
+↓
+PyTest
+↓
+Docker Image Build
+```
 
-                                                                                      ## Drift Monitoring
+Workflow:
 
-                                                                                      The project includes synthetic drift detection.
+```text
+.github/workflows/ci.yml
+```
 
-                                                                                      Observed result:
+---
 
-                                                                                      ```text
-                                                                                      Drifted columns: 2
-                                                                                      Total columns: 20
-                                                                                      Drift rate: 10%
-                                                                                      ```
+## Drift Monitoring
 
-                                                                                      This demonstrates how production ML systems can monitor feature distribution changes over time.
+The project includes synthetic drift detection.
 
-                                                                                      ---
+Observed result:
 
-                                                                                      ## Project Structure
+```text
+Drifted columns: 2
+Total columns: 20
+Drift rate: 10%
+```
 
-                                                                                      ```text
-                                                                                      customer-churn-mlops-pipeline/
-                                                                                      │
-                                                                                      ├── src/
-                                                                                      │   └── churn/
-                                                                                      │       ├── api.py
-                                                                                      │       ├── data/
-                                                                                      │       ├── inference/
-                                                                                      │       ├── monitoring/
-                                                                                      │       └── training/
-                                                                                      │
-                                                                                      ├── tests/
-                                                                                      ├── data/
-                                                                                      ├── terraform/
-                                                                                      ├── screenshots/
-                                                                                      │
-                                                                                      ├── .github/
-                                                                                      │   └── workflows/
-                                                                                      │       └── ci.yml
-                                                                                      │
-                                                                                      ├── Dockerfile
-                                                                                      ├── docker-compose.yml
-                                                                                      ├── requirements.txt
-                                                                                      ├── requirements-docker.txt
-                                                                                      ├── model.joblib
-                                                                                      ├── pyproject.toml
-                                                                                      ├── README.md
-                                                                                      └── LICENSE
-                                                                                      ```
+This demonstrates how production ML systems can monitor feature distribution changes over time.
 
-                                                                                      ---
+---
 
-                                                                                      ## Project Screenshots
+## Project Structure
 
-                                                                                      ### Docker Compose Configuration
+```text
+customer-churn-mlops-pipeline/
+│
+├── src/
+│   └── churn/
+│       ├── api.py
+│       ├── data/
+│       ├── inference/
+│       ├── monitoring/
+│       └── training/
+│
+├── tests/
+├── data/
+├── terraform/
+├── screenshots/
+│
+├── .github/
+│   └── workflows/
+│       └── ci.yml
+│
+├── Dockerfile
+├── docker-compose.yml
+├── requirements.txt
+├── requirements-docker.txt
+├── model.joblib
+├── pyproject.toml
+├── README.md
+└── LICENSE
+```
 
-                                                                                      ![Docker Compose](screenshots/docker-compose-configuration.png)
+---
 
-                                                                                      ### Dockerized FastAPI Service
+## Project Screenshots
 
-                                                                                      ![Docker Container](screenshots/docker-container-running.png)
+### Docker Compose Configuration
 
-                                                                                      ---
+![Docker Compose](screenshots/docker-compose-configuration.png)
 
-                                                                                      ## Demo Videos
+### Dockerized FastAPI Service
 
-                                                                                      - [Customer Churn MLOps Demo](screenshots/churn-mlops-demo.mp4)
-                                                                                      - - [FastAPI Inference Demo](screenshots/fastapi-inference-demo.mp4)
-                                                                                        - - [Swagger Prediction Demo](screenshots/swagger-predict-demo.mp4)
-                                                                                         
-                                                                                          - ---
+![Docker Container](screenshots/docker-container-running.png)
 
-                                                                                          ## Run Locally
+---
 
-                                                                                          ### Clone
+## Demo Videos
 
-                                                                                          ```bash
-                                                                                          git clone https://github.com/gireeshvuyyuru501-design/customer-churn-mlops-pipeline.git
-                                                                                          cd customer-churn-mlops-pipeline
-                                                                                          ```
+- [Customer Churn MLOps Demo](screenshots/churn-mlops-demo.mp4)
+- [FastAPI Inference Demo](screenshots/fastapi-inference-demo.mp4)
+- [Swagger Prediction Demo](screenshots/swagger-predict-demo.mp4)
 
-                                                                                          ### Create Environment
+- ---
 
-                                                                                          ```bash
-                                                                                          python -m venv .venv
-                                                                                          ```
+## Run Locally
 
-                                                                                          Windows:
+### Clone
 
-                                                                                          ```powershell
-                                                                                          .\.venv\Scripts\Activate.ps1
-                                                                                          ```
+```bash
+git clone https://github.com/gireeshvuyyuru501-design/customer-churn-mlops-pipeline.git
+cd customer-churn-mlops-pipeline
+```
 
-                                                                                          ### Install Dependencies
+### Create Environment
 
-                                                                                          ```bash
-                                                                                          pip install -r requirements.txt
-                                                                                          ```
+```bash
+python -m venv .venv
+```
 
-                                                                                          ### Run Tests
+Windows:
 
-                                                                                          ```bash
-                                                                                          python -m pytest -v
-                                                                                          ```
+```powershell
+.\.venv\Scripts\Activate.ps1
+```
 
-                                                                                          ### Start API
+### Install Dependencies
 
-                                                                                          ```bash
-                                                                                          python -m uvicorn churn.api:app --reload --port 8000
-                                                                                          ```
+```bash
+pip install -r requirements.txt
+```
 
-                                                                                          Swagger:
+### Run Tests
 
-                                                                                          ```text
-                                                                                          http://127.0.0.1:8000/docs
-                                                                                          ```
+```bash
+python -m pytest -v
+```
 
-                                                                                          ---
+### Start API
 
-                                                                                          ## Future Enhancements
+```bash
+python -m uvicorn churn.api:app --reload --port 8000
+```
 
-                                                                                          - Cloud deployment
-                                                                                          - - Managed model registry
-                                                                                            - - Scheduled retraining
-                                                                                              - - Automated model promotion
-                                                                                                - - Live feature monitoring
-                                                                                                  - - Alerting
-                                                                                                    - - Model explainability
-                                                                                                      - - Feature store integration
-                                                                                                        - - Kubernetes deployment
-                                                                                                          - - Production monitoring dashboard
-                                                                                                           
-                                                                                                            - ---
-                                                                                                            
-                                                                                                            ## Author
-                                                                                                            
-                                                                                                            Girish V
-                                                                                                            
-                                                                                                            AI/ML Engineer | Generative AI | Agentic AI | MLOps | Python
-                                                                                                            
-                                                                                                            GitHub:
-                                                                                                            https://github.com/gireeshvuyyuru501-design
-                                                                                                            
-                                                                                                            LinkedIn:
-                                                                                                            https://www.linkedin.com/in/girish-genai-engineer
-                                                                                                            
-                                                                                                            ---
-                                                                                                            
-                                                                                                            ## License
-                                                                                                            
-                                                                                                            This project is licensed under the MIT License.
-                                                                                                            
-                                                                                                            See the [LICENSE](LICENSE) file for details.
-                                                                                                            
-                                                                                                            ---
-                                                                                                            
-                                                                                                            ## Project Summary
-                                                                                                            
-                                                                                                            This project demonstrates a complete machine-learning lifecycle:
-                                                                                                            
-                                                                                                            Data → Training → MLflow → Quality Gate → Model Registry → FastAPI → Docker → Terraform → GitHub Actions → Drift Monitoring
-                                                                                                            
-                                                                                                            It showcases practical skills across Machine Learning, MLOps, API development, containerization, infrastructure as code, CI/CD, and model monitoring.
-                                                                                                            
+Swagger:
+
+```text
+http://127.0.0.1:8000/docs
+```
+
+---
+
+## Future Enhancements
+
+- Cloud deployment
+- Managed model registry
+- Scheduled retraining
+- Automated model promotion
+- Live feature monitoring
+- Alerting
+- Model explainability
+- Feature store integration
+- Kubernetes deployment
+- Production monitoring dashboard
+
+- ---
+
+## Author
+
+Girish V
+
+AI/ML Engineer | Generative AI | Agentic AI | MLOps | Python
+
+GitHub:
+https://github.com/gireeshvuyyuru501-design
+
+LinkedIn:
+https://www.linkedin.com/in/girish-genai-engineer
+
+---
+
+## License
+
+This project is licensed under the MIT License.
+
+See the [LICENSE](LICENSE) file for details.
+
+---
+
+## Project Summary
+
+This project demonstrates a complete machine-learning lifecycle:
+
+Data → Training → MLflow → Quality Gate → Model Registry → FastAPI → Docker → Terraform → GitHub Actions → Drift Monitoring
+
+It showcases practical skills across Machine Learning, MLOps, API development, containerization, infrastructure as code, CI/CD, and model monitoring.
+
