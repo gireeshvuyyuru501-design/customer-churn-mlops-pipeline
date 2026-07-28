@@ -1,270 +1,531 @@
-# Customer Churn Prediction — AWS-Native MLOps Pipeline
+# Customer Churn Prediction — End-to-End MLOps Pipeline
 
-An end-to-end MLOps pipeline for predicting telecom customer churn: data versioning, experiment
-tracking, infrastructure as code, automated CI/CD with a real quality gate, and production
-monitoring, all on AWS.
+A production-inspired machine learning and MLOps project for predicting customer churn using scikit-learn, MLflow, FastAPI, Docker, Docker Compose, Terraform, GitHub Actions, and drift monitoring.
 
-## Architecture
+The project covers the complete ML lifecycle from raw customer data and preprocessing through model training, experiment tracking, model validation, registry promotion, containerized inference, infrastructure as code, automated CI, and monitoring.
 
-```mermaid
-flowchart LR
-    KG[Kaggle CSV] --> PR["prepare.py<br/>clean data"]
-    PR --> DVC[("S3<br/>DVC data")]
-    DVC --> TR["train.py<br/>train + register in MLflow"]
-    TR --> GT{"gate.py<br/>recall ≥ 0.70?"}
-    GT -- fail --> STOP["Pipeline stops<br/>nothing deploys"]
-    GT -- pass --> PK["package.py<br/>build model.tar.gz"]
-    PK --> TF["terraform apply"]
-    TF --> EP["SageMaker Serverless<br/>Endpoint"]
+---
 
-    DR["drift.py<br/>synthetic vs baseline"] --> CW["CloudWatch metric<br/>DriftedColumnShare"]
-    CW --> AL{"Alarm<br/>share > 0.3?"}
+## Project Overview
 
-    GH["GitHub Actions<br/>(push to main)"] -.orchestrates.-> TR
-    GH -.-> GT
-    GH -.-> PK
-    GH -.-> TF
-```
+Customer churn is a common business problem where organizations need to identify customers who are likely to discontinue their service.
 
-Solid arrows show the data/model flow. Dashed arrows show what GitHub Actions automates end to
-end on every push. Drift monitoring runs independently — see [Monitoring](#monitoring).
+This project builds an end-to-end churn prediction pipeline that:
 
-## Tech stack
+- preprocesses customer data
+- - trains a machine learning model
+  - - tracks experiments using MLflow
+    - - validates model quality using a recall threshold
+      - - promotes the approved model as the champion version
+        - - exports the trained model for production inference
+          - - serves predictions through FastAPI
+            - - containerizes the service using Docker
+              - - orchestrates deployment using Docker Compose
+                - - manages container infrastructure using Terraform
+                  - - validates code and Docker builds using GitHub Actions
+                    - - detects synthetic feature drift
+                     
+                      - ---
 
-| Layer                  | Tool                                        |
-|-------------------------|----------------------------------------------|
-| Data versioning          | DVC (S3 remote)                              |
-| Experiment tracking      | MLflow (tracking + model registry)           |
-| Model                    | scikit-learn                                 |
-| Training / deployment    | AWS SageMaker                                |
-| Infrastructure as code   | Terraform                                    |
-| CI/CD                    | GitHub Actions (train → validate → deploy)   |
-| Drift monitoring         | Evidently AI + CloudWatch alarm              |
+                      ## Architecture
 
-## Repo structure
+                      ```text
+                      Telco Customer Churn Dataset
+                                  ↓
+                            Data Preparation
+                                  ↓
+                            Feature Processing
+                                  ↓
+                          scikit-learn Training
+                                  ↓
+                           MLflow Tracking
+                                  ↓
+                            Model Registry
+                                  ↓
+                            Quality Gate
+                           Recall >= 0.70
+                                  ↓
+                            Champion Model
+                                  ↓
+                             model.joblib
+                                  ↓
+                            FastAPI Inference
+                             /health /predict
+                                  ↓
+                                Docker
+                                  ↓
+                            Docker Compose
+                                  ↓
+                              Terraform
+                                  ↓
+                           GitHub Actions CI
+                                  ↓
+                            Drift Monitoring
+                      ```
 
-```
-.
-├── .github/workflows/    # CI/CD pipeline
-├── config/               # hyperparameters, quality gate threshold
-├── data/                 # DVC-tracked raw/processed data (not in git)
-├── docs/                 # supporting write-ups
-├── notebooks/            # exploratory analysis, not part of the pipeline
-├── scripts/              # data download
-├── src/churn/
-│   ├── data/              # cleaning
-│   ├── training/           # training, evaluation, quality gate
-│   ├── inference/            # SageMaker inference entry point, packaging
-│   └── monitoring/            # drift detection
-├── terraform/
-│   ├── backend.tf             # remote state
-│   ├── s3.tf                   # data bucket
-│   ├── iam.tf                   # SageMaker execution role
-│   ├── iam_ci.tf                  # CI identity and policy
-│   ├── sagemaker.tf                # model, endpoint config, endpoint
-│   └── monitoring.tf                # drift alarm
-├── Makefile
-└── requirements*.txt
-```
+                      ---
 
-## Setup
+                      ## Key Results
 
-Requires Python 3.11.
+                      - Raw customer records: 7,043
+                      - - Cleaned records: 7,032
+                        - - Records removed due to missing TotalCharges: 11
+                          - - Churn rate: 26.6%
+                            - - Quality-gate threshold: Recall >= 0.70
+                              - - Achieved recall: 0.7968
+                                - - Champion model: Version 1
+                                  - - Synthetic drift detected: 2 of 20 columns
+                                    - - Drift rate: 10%
+                                      - - FastAPI prediction endpoint successfully containerized with Docker
+                                       
+                                        - ---
 
-```bash
-make setup      # creates .venv, installs dependencies, installs the package in editable mode
-```
+                                        ## Features
 
-Copy `.env.example` to `.env` and fill in AWS and Kaggle credentials before running data or
-training steps.
+                                        - Customer churn prediction
+                                        - - Data preprocessing pipeline
+                                          - - MLflow experiment tracking
+                                            - - MLflow model registry
+                                              - - Model quality gate
+                                                - - Champion model promotion
+                                                  - - Model packaging
+                                                    - - FastAPI inference API
+                                                      - - Dockerized model serving
+                                                        - - Docker Compose orchestration
+                                                          - - Terraform infrastructure as code
+                                                            - - GitHub Actions CI pipeline
+                                                              - - Synthetic drift detection
+                                                                - - Automated testing
+                                                                  - - Swagger/OpenAPI documentation
+                                                                   
+                                                                    - ---
 
-## Data
+                                                                    ## Tech Stack
 
-The dataset is the [Telco Customer Churn](https://www.kaggle.com/datasets/blastchar/telco-customer-churn)
-dataset from Kaggle, versioned with DVC against an S3 remote provisioned by Terraform.
+                                                                    | Category | Technologies |
+                                                                    |---|---|
+                                                                    | Programming | Python |
+                                                                    | Data Processing | pandas |
+                                                                    | Machine Learning | scikit-learn |
+                                                                    | Model Persistence | joblib |
+                                                                    | Experiment Tracking | MLflow |
+                                                                    | Model Registry | MLflow Model Registry |
+                                                                    | Backend API | FastAPI |
+                                                                    | Validation | Pydantic |
+                                                                    | API Server | Uvicorn |
+                                                                    | Containers | Docker |
+                                                                    | Orchestration | Docker Compose |
+                                                                    | Infrastructure as Code | Terraform |
+                                                                    | CI/CD | GitHub Actions |
+                                                                    | Testing | PyTest |
+                                                                    | Monitoring | Synthetic Drift Detection |
+                                                                    | Version Control | Git, GitHub |
 
-```bash
-cd terraform && terraform init && terraform apply   # provisions the S3 bucket
+                                                                    ---
 
-make download-data    # pulls the raw CSV from Kaggle
-make prepare-data     # cleans it: drops customerID, fixes TotalCharges, encodes the target
+                                                                    ## Dataset
 
-dvc add data/raw/WA_Fn-UseC_-Telco-Customer-Churn.csv data/processed/telco_churn_clean.csv
-dvc remote add -d storage s3://<dvc-bucket-name>/dvc-store
-dvc push
-```
+                                                                    The project uses the Telco Customer Churn dataset.
 
-The dataset is about 26.6% churn — imbalanced enough that evaluation leads with precision,
-recall, and ROC-AUC rather than raw accuracy.
+                                                                    The preprocessing pipeline:
 
-## Training
+                                                                    - loads the raw customer data
+                                                                    - - removes rows with missing TotalCharges
+                                                                      - - prepares features for training
+                                                                        - - preserves feature order for production inference
+                                                                          - - outputs the cleaned dataset
+                                                                           
+                                                                            - Processed output:
+                                                                           
+                                                                            - ```text
+                                                                              Rows in: 7043
+                                                                              Rows out: 7032
+                                                                              Churn rate: 26.6%
+                                                                              ```
 
-```bash
-make train        # trains all candidates, logs to MLflow, registers the best
-make mlflow-ui     # inspect runs and models at http://127.0.0.1:5001
-```
+                                                                              ---
 
-[train.py](src/churn/training/train.py) trains every candidate defined in
-[train_config.yaml](config/train_config.yaml) — currently logistic regression and random forest,
-both weighted to account for class imbalance — logs parameters, metrics, and the model artifact
-for each as its own MLflow run, then registers the candidate with the best ROC-AUC as
-`churn-classifier` in the MLflow Model Registry under a `champion` alias.
+                                                                              ## Model Training
 
-Tracking uses a SQLite backend rather than MLflow's plain file store, since the Model Registry
-requires a database-backed store. Because CI runs on fresh, ephemeral machines, the tracking
-database is synced through the same S3 bucket used for data versioning — pulled before training
-and pushed back after — so registry history and version numbers stay continuous across local and
-CI runs instead of resetting on every pipeline execution.
+                                                                              The training pipeline uses scikit-learn and logs experiments to MLflow.
 
-```bash
-make mlflow-pull   # bring CI's training history into your local UI
-make mlflow-push   # publish a local run to the shared history
-```
+                                                                              MLflow tracks:
 
-This isn't automatic on every `make train`, since most local runs are exploratory. Note that this
-approach doesn't provide concurrent-write safety; it's appropriate for a single-operator project,
-not a multi-writer production setup, which would call for a dedicated MLflow tracking server.
+                                                                              - model parameters
+                                                                              - - evaluation metrics
+                                                                                - - model artifacts
+                                                                                  - - model versions
+                                                                                    - - experiment history
+                                                                                     
+                                                                                      - ---
 
-## Deploy
+                                                                                      ## Model Quality Gate
 
-```bash
-make package-model                                  # exports the MLflow champion to build/model.tar.gz
-cd terraform && terraform init && terraform apply    # uploads it and deploys the SageMaker endpoint
-```
+                                                                                      A production model should not automatically be promoted without validation.
 
-`make package-model` must run before `terraform apply`, since Terraform uploads whatever tarball
-currently exists rather than building it.
+                                                                                      This project implements a quality gate using recall:
 
-Deployment uses [SageMaker Serverless Inference](https://docs.aws.amazon.com/sagemaker/latest/dg/serverless-endpoints.html)
-rather than an always-on real-time endpoint, so there is no idle-hour billing while the endpoint
-exists but receives no traffic. [inference.py](src/churn/inference/inference.py) implements the
-four functions AWS's prebuilt scikit-learn container expects
-(`model_fn`/`input_fn`/`predict_fn`/`output_fn`); [package.py](src/churn/inference/package.py)
-exports the MLflow champion model, re-serializes it as `model.joblib`, and packages it with the
-inference script — no additional runtime dependencies bundled.
+                                                                                      ```text
+                                                                                      Required recall >= 0.70
+                                                                                      Achieved recall = 0.7968
+                                                                                      ```
 
-Two constraints keep training and serving in lockstep:
-- `requirements.txt` pins `scikit-learn==1.4.2`, the newest version supported by AWS's prebuilt
-  SageMaker scikit-learn container. Models pickled with a newer scikit-learn aren't guaranteed to
-  unpickle correctly against an older one.
-- The container doesn't include pandas. Rather than add it as a runtime dependency, the model's
-  `ColumnTransformer` selects features by position rather than by name, so `inference.py` builds
-  a plain Python list from the incoming JSON request in a fixed column order
-  (`FEATURE_COLUMNS`, matching the processed dataset's schema) instead of constructing a
-  DataFrame.
+                                                                                      Result:
 
-Test a deployed endpoint:
+                                                                                      ```text
+                                                                                      PASS
+                                                                                      ```
 
-```bash
-cat > /tmp/payload.json <<'EOF'
-{"gender":"Female","SeniorCitizen":0,"Partner":"Yes","Dependents":"No","tenure":1,"PhoneService":"No","MultipleLines":"No phone service","InternetService":"DSL","OnlineSecurity":"No","OnlineBackup":"Yes","DeviceProtection":"No","TechSupport":"No","StreamingTV":"No","StreamingMovies":"No","Contract":"Month-to-month","PaperlessBilling":"Yes","PaymentMethod":"Electronic check","MonthlyCharges":29.85,"TotalCharges":29.85}
-EOF
+                                                                                      The approved model is registered as the champion model.
 
-aws sagemaker-runtime invoke-endpoint \
-  --endpoint-name "$(terraform output -raw sagemaker_endpoint_name)" \
-  --content-type application/json \
-  --cli-binary-format raw-in-base64-out \
-  --body file:///tmp/payload.json \
-  /tmp/response.json && cat /tmp/response.json
-```
+                                                                                      ---
 
-`--cli-binary-format raw-in-base64-out` is required with AWS CLI v2, which treats binary
-parameters as base64-encoded by default.
+                                                                                      ## MLflow Model Registry
 
-The IAM execution role ([iam.tf](terraform/iam.tf)) is scoped to exactly what the endpoint
-needs — read access to its model artifact prefix in S3 and permission to write its own
-CloudWatch logs — rather than a broad managed policy.
+                                                                                      The trained model is tracked and promoted using MLflow Model Registry.
 
-## CI/CD
+                                                                                      Champion model:
 
-[train-validate-deploy.yml](.github/workflows/train-validate-deploy.yml) runs on every push to
-`main` that touches the source code, config, versioned data, or infrastructure, plus on manual
-trigger. A single job runs sequentially:
+                                                                                      ```text
+                                                                                      churn-classifier@champion
+                                                                                      ```
 
-```
-resolve data bucket → pull data → sync MLflow history →
-train → quality gate → package → deploy
-```
+                                                                                      The champion model is exported into:
 
-The [quality gate](src/churn/training/gate.py) checks the newly trained champion's recall against
-a threshold defined in `train_config.yaml` and exits non-zero if it isn't met. GitHub Actions
-stops the job on any failed step, so a failing gate blocks packaging and deployment without any
-additional conditional logic.
+                                                                                      ```text
+                                                                                      model.joblib
+                                                                                      ```
 
-The gate deliberately checks a different metric than model selection: ROC-AUC picks the best
-candidate among those trained in a given run, while the gate's recall threshold decides whether
-that candidate is good enough to ship. For churn prediction, missing an actual churner is costlier
-than a false alarm, which is why the gate is built around recall specifically.
+                                                                                      for lightweight containerized inference.
 
-Two pieces of supporting infrastructure make this work:
+                                                                                      ---
 
-- **Remote Terraform state.** A local state file is sufficient when only one machine runs
-  `terraform apply`; once CI does too, both need a shared view of state. [backend.tf](terraform/backend.tf)
-  configures an S3 backend pointing at a separate, stable bucket — not the data bucket, which is
-  destroyed and recreated across teardown cycles.
-- **A scoped CI identity.** [iam_ci.tf](terraform/iam_ci.tf) defines an IAM user with a managed
-  policy limited to the specific S3 buckets, SageMaker execution role, and SageMaker resources
-  this pipeline manages. Authentication uses a static access key stored as GitHub repository
-  secrets.
+                                                                                      ## FastAPI Inference API
 
-## Monitoring
+                                                                                      The model is exposed through FastAPI.
 
-```bash
-make check-drift   # compares a synthetic drifted sample against the training baseline
-```
+                                                                                      ### Health Endpoint
 
-[drift.py](src/churn/monitoring/drift.py) uses [Evidently](https://www.evidentlyai.com/) to
-compare incoming data against the training baseline. Since this project has no live production
-traffic, the default mode generates a synthetically perturbed sample to demonstrate detection;
-pointing `--current` at a real CSV compares against actual data instead. The share of drifted
-columns is reported as a custom CloudWatch metric (`ChurnMLOps/DriftedColumnShare`), and
-[monitoring.tf](terraform/monitoring.tf) defines an alarm that fires above a 30% threshold.
+                                                                                      ```http
+                                                                                      GET /health
+                                                                                      ```
 
-The check runs on demand rather than on a schedule, since there is no live traffic to justify a
-fixed cadence.
+                                                                                      Example response:
 
-## Design decisions
+                                                                                      ```json
+                                                                                      {
+                                                                                        "status": "healthy",
+                                                                                        "model": "churn-classifier-champion"
+                                                                                      }
+                                                                                      ```
 
-**SageMaker Serverless Inference over a real-time endpoint.** A real-time endpoint bills
-continuously for as long as it exists, regardless of traffic — roughly $36/month for an
-`ml.t2.medium` left running. Serverless Inference scales to zero and bills per invocation, at the
-cost of cold-start latency on the first request after an idle period. For a project with
-intermittent, low-volume traffic, that tradeoff favors serverless clearly.
+                                                                                      ---
 
-**A shared SQLite tracking store over a standing MLflow server.** A dedicated tracking server
-backed by Postgres is the standard production setup, but it requires an always-on service. Syncing
-the SQLite tracking database through S3 — pulled before training, pushed back after, on both local
-and CI runs — avoids that cost while keeping registry history continuous. The tradeoff is no
-concurrent-write safety, acceptable for a single-operator project but not for a team.
+                                                                                      ## Prediction Endpoint
 
-**Position-based feature selection over bundling pandas into the serving container.** AWS's
-prebuilt SageMaker scikit-learn container doesn't include pandas, and its mechanism for installing
-additional dependencies at runtime is unreliable for custom inference scripts. Rather than work
-around that, the model's preprocessing selects columns by position instead of by name, so the
-inference script never needs pandas or a DataFrame at all — one fewer dependency in the serving
-path.
+                                                                                      ```http
+                                                                                      POST /predict
+                                                                                      ```
 
-## Cost & cleanup
+                                                                                      Example request:
 
-```bash
-make destroy
-```
+                                                                                      ```json
+                                                                                      {
+                                                                                        "gender": "Female",
+                                                                                        "SeniorCitizen": 0,
+                                                                                        "Partner": "No",
+                                                                                        "Dependents": "No",
+                                                                                        "tenure": 2,
+                                                                                        "PhoneService": "Yes",
+                                                                                        "MultipleLines": "No",
+                                                                                        "InternetService": "Fiber optic",
+                                                                                        "OnlineSecurity": "No",
+                                                                                        "OnlineBackup": "No",
+                                                                                        "DeviceProtection": "No",
+                                                                                        "TechSupport": "No",
+                                                                                        "StreamingTV": "Yes",
+                                                                                        "StreamingMovies": "Yes",
+                                                                                        "Contract": "Month-to-month",
+                                                                                        "PaperlessBilling": "Yes",
+                                                                                        "PaymentMethod": "Electronic check",
+                                                                                        "MonthlyCharges": 95.5,
+                                                                                        "TotalCharges": 190.5
+                                                                                      }
+                                                                                      ```
 
-Tears down everything Terraform manages: the SageMaker endpoint, endpoint configuration, and
-model; the SageMaker execution role; the CI IAM user and policy; the data bucket; and the drift
-alarm.
+                                                                                      Example response:
 
-The Terraform state bucket is intentionally excluded, since it needs to persist across
-destroy/rebuild cycles of everything else. It holds only a small state file and costs
-effectively nothing to leave in place. To remove it as well:
+                                                                                      ```json
+                                                                                      {
+                                                                                        "prediction": "Churn",
+                                                                                        "churn_probability": 0.8861,
+                                                                                        "model": "churn-classifier-champion"
+                                                                                      }
+                                                                                      ```
 
-```bash
-aws s3 rb "s3://mlops-tfstate-$(aws sts get-caller-identity --query Account --output text)" --force
-```
+                                                                                      ---
 
-Ongoing cost while deployed but idle is effectively zero: the serverless endpoint doesn't bill
-per hour, and S3 storage for this project's data and state amounts to fractions of a cent.
+                                                                                      ## Docker
 
-## License
+                                                                                      The inference service is packaged using Docker.
 
-MIT
+                                                                                      Build:
+
+                                                                                      ```bash
+                                                                                      docker build -t churn-mlops-api .
+                                                                                      ```
+
+                                                                                      Run:
+
+                                                                                      ```bash
+                                                                                      docker run --rm -p 8000:8000 churn-mlops-api
+                                                                                      ```
+
+                                                                                      Open:
+
+                                                                                      ```text
+                                                                                      http://127.0.0.1:8000/docs
+                                                                                      ```
+
+                                                                                      ---
+
+                                                                                      ## Docker Compose
+
+                                                                                      Run the containerized API using Docker Compose:
+
+                                                                                      ```bash
+                                                                                      docker compose up --build
+                                                                                      ```
+
+                                                                                      Stop:
+
+                                                                                      ```bash
+                                                                                      docker compose down
+                                                                                      ```
+
+                                                                                      ---
+
+                                                                                      ## Terraform
+
+                                                                                      Terraform manages the local Docker container as infrastructure as code.
+
+                                                                                      Initialize:
+
+                                                                                      ```bash
+                                                                                      terraform -chdir=terraform init
+                                                                                      ```
+
+                                                                                      Validate:
+
+                                                                                      ```bash
+                                                                                      terraform -chdir=terraform validate
+                                                                                      ```
+
+                                                                                      Plan:
+
+                                                                                      ```bash
+                                                                                      terraform -chdir=terraform plan
+                                                                                      ```
+
+                                                                                      Apply:
+
+                                                                                      ```bash
+                                                                                      terraform -chdir=terraform apply -auto-approve
+                                                                                      ```
+
+                                                                                      Destroy:
+
+                                                                                      ```bash
+                                                                                      terraform -chdir=terraform destroy -auto-approve
+                                                                                      ```
+
+                                                                                      ---
+
+                                                                                      ## GitHub Actions CI
+
+                                                                                      The GitHub Actions workflow automatically performs:
+
+                                                                                      ```text
+                                                                                      Git Push
+                                                                                          ↓
+                                                                                      Checkout
+                                                                                          ↓
+                                                                                      Python 3.11 Setup
+                                                                                          ↓
+                                                                                      Dependency Installation
+                                                                                          ↓
+                                                                                      PyTest
+                                                                                          ↓
+                                                                                      Docker Image Build
+                                                                                      ```
+
+                                                                                      Workflow:
+
+                                                                                      ```text
+                                                                                      .github/workflows/ci.yml
+                                                                                      ```
+
+                                                                                      ---
+
+                                                                                      ## Drift Monitoring
+
+                                                                                      The project includes synthetic drift detection.
+
+                                                                                      Observed result:
+
+                                                                                      ```text
+                                                                                      Drifted columns: 2
+                                                                                      Total columns: 20
+                                                                                      Drift rate: 10%
+                                                                                      ```
+
+                                                                                      This demonstrates how production ML systems can monitor feature distribution changes over time.
+
+                                                                                      ---
+
+                                                                                      ## Project Structure
+
+                                                                                      ```text
+                                                                                      customer-churn-mlops-pipeline/
+                                                                                      │
+                                                                                      ├── src/
+                                                                                      │   └── churn/
+                                                                                      │       ├── api.py
+                                                                                      │       ├── data/
+                                                                                      │       ├── inference/
+                                                                                      │       ├── monitoring/
+                                                                                      │       └── training/
+                                                                                      │
+                                                                                      ├── tests/
+                                                                                      ├── data/
+                                                                                      ├── terraform/
+                                                                                      ├── screenshots/
+                                                                                      │
+                                                                                      ├── .github/
+                                                                                      │   └── workflows/
+                                                                                      │       └── ci.yml
+                                                                                      │
+                                                                                      ├── Dockerfile
+                                                                                      ├── docker-compose.yml
+                                                                                      ├── requirements.txt
+                                                                                      ├── requirements-docker.txt
+                                                                                      ├── model.joblib
+                                                                                      ├── pyproject.toml
+                                                                                      ├── README.md
+                                                                                      └── LICENSE
+                                                                                      ```
+
+                                                                                      ---
+
+                                                                                      ## Project Screenshots
+
+                                                                                      ### Docker Compose Configuration
+
+                                                                                      ![Docker Compose](screenshots/docker-compose-configuration.png)
+
+                                                                                      ### Dockerized FastAPI Service
+
+                                                                                      ![Docker Container](screenshots/docker-container-running.png)
+
+                                                                                      ---
+
+                                                                                      ## Demo Videos
+
+                                                                                      - [Customer Churn MLOps Demo](screenshots/churn-mlops-demo.mp4)
+                                                                                      - - [FastAPI Inference Demo](screenshots/fastapi-inference-demo.mp4)
+                                                                                        - - [Swagger Prediction Demo](screenshots/swagger-predict-demo.mp4)
+                                                                                         
+                                                                                          - ---
+
+                                                                                          ## Run Locally
+
+                                                                                          ### Clone
+
+                                                                                          ```bash
+                                                                                          git clone https://github.com/gireeshvuyyuru501-design/customer-churn-mlops-pipeline.git
+                                                                                          cd customer-churn-mlops-pipeline
+                                                                                          ```
+
+                                                                                          ### Create Environment
+
+                                                                                          ```bash
+                                                                                          python -m venv .venv
+                                                                                          ```
+
+                                                                                          Windows:
+
+                                                                                          ```powershell
+                                                                                          .\.venv\Scripts\Activate.ps1
+                                                                                          ```
+
+                                                                                          ### Install Dependencies
+
+                                                                                          ```bash
+                                                                                          pip install -r requirements.txt
+                                                                                          ```
+
+                                                                                          ### Run Tests
+
+                                                                                          ```bash
+                                                                                          python -m pytest -v
+                                                                                          ```
+
+                                                                                          ### Start API
+
+                                                                                          ```bash
+                                                                                          python -m uvicorn churn.api:app --reload --port 8000
+                                                                                          ```
+
+                                                                                          Swagger:
+
+                                                                                          ```text
+                                                                                          http://127.0.0.1:8000/docs
+                                                                                          ```
+
+                                                                                          ---
+
+                                                                                          ## Future Enhancements
+
+                                                                                          - Cloud deployment
+                                                                                          - - Managed model registry
+                                                                                            - - Scheduled retraining
+                                                                                              - - Automated model promotion
+                                                                                                - - Live feature monitoring
+                                                                                                  - - Alerting
+                                                                                                    - - Model explainability
+                                                                                                      - - Feature store integration
+                                                                                                        - - Kubernetes deployment
+                                                                                                          - - Production monitoring dashboard
+                                                                                                           
+                                                                                                            - ---
+                                                                                                            
+                                                                                                            ## Author
+                                                                                                            
+                                                                                                            Girish V
+                                                                                                            
+                                                                                                            AI/ML Engineer | Generative AI | Agentic AI | MLOps | Python
+                                                                                                            
+                                                                                                            GitHub:
+                                                                                                            https://github.com/gireeshvuyyuru501-design
+                                                                                                            
+                                                                                                            LinkedIn:
+                                                                                                            https://www.linkedin.com/in/girish-genai-engineer
+                                                                                                            
+                                                                                                            ---
+                                                                                                            
+                                                                                                            ## License
+                                                                                                            
+                                                                                                            This project is licensed under the MIT License.
+                                                                                                            
+                                                                                                            See the [LICENSE](LICENSE) file for details.
+                                                                                                            
+                                                                                                            ---
+                                                                                                            
+                                                                                                            ## Project Summary
+                                                                                                            
+                                                                                                            This project demonstrates a complete machine-learning lifecycle:
+                                                                                                            
+                                                                                                            Data → Training → MLflow → Quality Gate → Model Registry → FastAPI → Docker → Terraform → GitHub Actions → Drift Monitoring
+                                                                                                            
+                                                                                                            It showcases practical skills across Machine Learning, MLOps, API development, containerization, infrastructure as code, CI/CD, and model monitoring.
+                                                                                                            
