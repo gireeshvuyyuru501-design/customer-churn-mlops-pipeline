@@ -1,0 +1,30 @@
+data_path: data/processed/telco_churn_clean.csv
+target: Churn
+
+test_size: 0.2
+random_state: 42
+
+experiment_name: churn-prediction
+registered_model_name: churn-classifier
+
+# Metric used to select the best candidate.
+primary_metric: roc_auc
+
+# Separate metric used to gate deployment.
+quality_gate:
+  metric: recall
+  min_value: 0.70
+
+candidates:
+  - name: logistic_regression
+    params:
+      C: 1.0
+      max_iter: 1000
+      class_weight: balanced
+
+  - name: random_forest
+    params:
+      n_estimators: 300
+      max_depth: 8
+      class_weight: balanced
+      n_jobs: -1

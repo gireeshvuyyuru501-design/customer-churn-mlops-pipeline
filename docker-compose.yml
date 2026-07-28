@@ -1,0 +1,7 @@
+services:
+  churn-api:
+    build: .
+    container_name: churn-mlops-api
+    ports:
+      - "8000:8000"
+    restart: unless-stopped

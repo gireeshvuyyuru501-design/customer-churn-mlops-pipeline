@@ -1,0 +1,14 @@
+@'
+.venv
+.git
+.github
+__pycache__
+.pytest_cache
+*.pyc
+mlflow.db
+mlruns
+data
+build
+terraform
+terraform-aws-reference
+'@ | Set-Content .\.dockerignore
